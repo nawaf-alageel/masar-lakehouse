@@ -14,7 +14,8 @@ def register_bronze() -> None:
     from pathlib import Path
     for t in TABLES:
         if (Path(BRONZE) / t / "_delta_log").exists():
-            spark.sql(f"CREATE TABLE IF NOT EXISTS bronze.{t} USING DELTA LOCATION '{BRONZE}/{t}'")
+            location = (Path(BRONZE) / t).as_posix()   # forward slashes: SQL treats "\" as an escape
+            spark.sql(f"CREATE TABLE IF NOT EXISTS bronze.{t} USING DELTA LOCATION '{location}'")
             print(f"registered bronze.{t}")
         else:
             print(f"skipped bronze.{t} (not landed yet)")

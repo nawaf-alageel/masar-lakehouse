@@ -15,6 +15,7 @@ dbt/masar/logs/
 logs/
 .pytest_cache/
 .DS_Store
-
+./.user.yml
 # Trainer-only files (never pushed)
 TRAINER_NOTES.md
+dbt/masar/.user.yml

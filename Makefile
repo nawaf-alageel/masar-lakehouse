@@ -1,11 +1,11 @@
 # SDA-DSC-214 workshop helpers.  Usage: make <target>
-PY  := $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
-DBT := $(if $(wildcard .venv/bin/dbt),.venv/bin/dbt,dbt)
+PY  := $(firstword $(wildcard .venv/bin/python .venv/Scripts/python.exe) python3)
+DBT := $(firstword $(wildcard $(CURDIR)/.venv/bin/dbt $(CURDIR)/.venv/Scripts/dbt.exe) dbt)
 export PYTHONPATH := $(CURDIR)/src
 export MASAR_HOME := $(CURDIR)
 
 .PHONY: help setup doctor data clean-data clean-lakehouse test kafka-up kafka-down kafka-topic \
-        register dbt-deps dbt-debug pipeline
+        register dbt-deps dbt-debug dbt-freshness pipeline
 
 help:
 	@echo "make setup           create .venv and install pinned packages"
@@ -47,6 +47,9 @@ dbt-deps:
 
 dbt-debug:
 	cd dbt/masar && $(DBT) debug
+
+dbt-freshness:
+	cd dbt/masar && $(DBT) source freshness
 
 kafka-up:
 	docker compose up -d kafka
